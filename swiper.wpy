@@ -277,7 +277,7 @@ export default class weSwiper extends wepy.component {
       animation[`translate${XORY}`](translate).step()  //  动画描述
 
       this.syncView(animationViewName, animation)  //  同步动画到视图
-      typeof onAnimationStart === 'function' && onAnimationStart(translate, speed)
+      typeof onAnimationStart === 'function' && onAnimationStart(this, translate, speed)
 
     } catch (err) {
       consoleException(err, 'slideAnimation[Function]')
