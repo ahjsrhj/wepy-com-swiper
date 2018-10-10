@@ -35,6 +35,7 @@ const DEFAULT = {
    * 事件回调
    * @type {[type]}
    */
+  onAnimationStart: null,               //  animation函数调用时执行
   onInit: null,                         //  swiper初始化时执行
   onTouchStart: null,                   //  手指碰触slide时执行
   onTouchMove: null,                    //  手指碰触slide并且滑动时执行
@@ -255,7 +256,7 @@ export default class weSwiper extends wepy.component {
       translate = parseInt(translate)
     }
 
-    const { XORY, animationViewName, consoleException } = this
+    const { XORY, animationViewName, consoleException, onAnimationStart } = this
     try {
       /**
        * 异常处理
@@ -276,6 +277,7 @@ export default class weSwiper extends wepy.component {
       animation[`translate${XORY}`](translate).step()  //  动画描述
 
       this.syncView(animationViewName, animation)  //  同步动画到视图
+      typeof onAnimationStart === 'function' && onAnimationStart(translate, speed)
 
     } catch (err) {
       consoleException(err, 'slideAnimation[Function]')
@@ -342,6 +344,10 @@ export default class weSwiper extends wepy.component {
     const CONFIG = Object.assign(this, DEFAULT , option)
 
     this.initSwiper(CONFIG)
+  }
+
+  changeSlideLength(newValue) {
+    this.slideLength = newValue
   }
 }
 </script>
