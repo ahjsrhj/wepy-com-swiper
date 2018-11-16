@@ -31,6 +31,7 @@ const DEFAULT = {
   autoplay: 0,                          //  自动播放间隔，设置为0时不自动播放
   directionViewName: 'directionClass',   //  对应视图中direction类名
   animationViewName: 'animationData',   //  对应视图中animation属性名
+  enableTouch: true,                    // 开启/关闭触摸华东
   /**
    * 事件回调
    * @type {[type]}
@@ -63,7 +64,10 @@ export default class weSwiper extends wepy.component {
 
   methods = {
     touchstart (e) {
-      const { onTouchStart, XORY, activeIndex, rectDistance } = this
+      const { onTouchStart, XORY, activeIndex, rectDistance, enableTouch } = this
+      if (!enableTouch) {
+        return;
+      }
       const touch = e.changedTouches[0]
       const distance = touch[`client${XORY}`]
       const translate =  - activeIndex * rectDistance
@@ -78,7 +82,10 @@ export default class weSwiper extends wepy.component {
     },
 
     touchmove (e) {
-      const { onTouchMove, XORY, onSlideMove } = this
+      const { onTouchMove, XORY, onSlideMove, enableTouch } = this
+      if (!enableTouch) {
+        return;
+      }
       const touch = e.changedTouches[0]
       const distance = touch[`client${XORY}`]
       const tmpMove = this[`translate${XORY}`] + distance - this[`touchStart${XORY}`]
@@ -91,7 +98,10 @@ export default class weSwiper extends wepy.component {
     },
 
     touchend (e) {
-      const { onTouchEnd, XORY, speed, touchStartTime, rectDistance } = this
+      const { onTouchEnd, XORY, speed, touchStartTime, rectDistance, enableTouch } = this
+      if (!enableTouch) {
+        return;
+      }
       const touch = e.changedTouches[0]
       const distance = touch[`client${XORY}`]
       const touchEndTime = new Date().getTime()
@@ -314,6 +324,7 @@ export default class weSwiper extends wepy.component {
       initialSlide,
       direction,
       autoplay,
+      enableTouch,
       directionViewName
     } = param
 
@@ -322,7 +333,7 @@ export default class weSwiper extends wepy.component {
     this.rectDistance = direction === 'horizontal' ? this.width : this.height
     this.XORY = direction === 'horizontal' ? 'X' : 'Y'
     this.activeIndex = initialSlide  //  将初始页码赋给activeIndex
-    this.noSwiper = false  //  阻止手势滑动
+    this.enableTouch = enableTouch  //  阻止手势滑动
     this.previousIndex = initialSlide  //  返回上一个活动块的索引，切换前的索引
     this.slideTo(initialSlide, 0)
     typeof autoplay === 'number' && autoplay > 0 && setInterval(() => {
